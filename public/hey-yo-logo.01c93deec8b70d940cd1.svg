@@ -1,0 +1,18 @@
+<svg width="380" height="230" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="232" width="382" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path stroke="#000" id="svg_2" d="m190.75003,2.75c-102.16462,0 -185.00004,40.44582 -185.00004,90.34173c0,28.53952 27.19277,53.96797 69.53027,70.51794c-6.02403,14.67277 -18.04598,30.924 -41.28128,45.29756c0,0 54.23617,-2.63771 92.54402,-31.18111c2.20538,0.39744 4.48815,0.69659 6.71439,1.06358c-2.0922,-4.58706 -3.32392,-9.35558 -3.32392,-14.31709c0,-33.6638 51.01047,-60.02338 116.16045,-60.02338c46.79472,0 86.16961,13.65091 104.70487,33.79249c15.77892,-13.29533 24.9512,-28.69477 24.9512,-45.16146c0,-49.88445 -82.8354,-90.33027 -184.99995,-90.33027l-0.00001,0zm157.98241,161.73031c0,-27.67678 -45.94463,-50.13059 -102.654,-50.13059c-56.67844,0 -102.64897,22.45381 -102.64897,50.13059c0,27.69163 45.97053,50.13425 102.64897,50.13425c12.55268,0 24.50793,-1.15436 35.62317,-3.16759c21.25113,15.84597 51.34488,17.30306 51.34488,17.30306c-12.88748,-7.97804 -19.54528,-16.99303 -22.89501,-25.14119c23.47752,-9.17369 38.58097,-23.28275 38.58097,-39.12853z" stroke-width="3.5" fill="none"/>
+  <text font-weight="bold" font-style="italic" stroke="#000" transform="matrix(4.422050388334553,0,0,2.8469851640454165,-786.3509624903007,-488.780728391854) " xml:space="preserve" text-anchor="start" font-family="Junction, sans-serif" font-size="24" id="svg_1" y="208.05774" x="178.98348" stroke-width="0" fill="#ff5656">Hey</text>
+  <text font-style="italic" font-weight="bold" stroke="#000" transform="matrix(4.086228492831507,0,0,2.8367161642590326,-1356.4244928477617,-677.1393643727922) " xml:space="preserve" text-anchor="start" font-family="Junction, sans-serif" font-size="24" id="svg_3" y="299.01194" x="372.17209" stroke-opacity="null" stroke-width="0" fill="#bf0000">yo</text>
+  <text stroke="#000" font-weight="bold" font-style="italic" transform="rotate(-29.834936141967773 295.6073303222657,168.67994689941406) matrix(6.259817511108917,0,0,4.0343462911811265,-2660.5424399433377,-797.6292982451173) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_4" y="247.77658" x="467.96777" stroke-opacity="null" stroke-width="0" fill="#ff5656">!</text>
+ </g>
+</svg>
