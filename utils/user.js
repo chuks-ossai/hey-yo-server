@@ -1,19 +1,23 @@
 const users = [];
 
 const addUser = (id, username, room) => {
+    username = username.trim().toLowerCase();
+    room = room.trim().toLowerCase();
+
+    const existingUser = users.find(user => user.username === room && user.room === room);
+
+    if (existingUser) {
+        console.log({error: 'Username already exist for the selected room'})
+    }
     const user = { id, username, room };
     users.push(user);
     return user;
 };
 
-const getCurrentUser = id => {
-    return cusers.find(user => user.id === id);
-};
+const getCurrentUser = id => users.find(user => user.id === id);
 
 const getLeavingUser = id => {
-    console.log('users', users);
     const index = users.findIndex(user => user.id === id);
-    console.log('index', index)
     if (index !== -1) {
         return users.splice(index, 1)[0];
     }

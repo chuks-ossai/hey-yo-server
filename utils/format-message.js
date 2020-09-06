@@ -1,10 +1,12 @@
 const moment = require('moment');
 
-const formatMessage = (username, content, userType) => {
+const formatMessage = (username, content, isChatbot, room=null, userId = null) => {
     return {
         username,
         content,
-        userType,
+        userId,
+        room,
+        isChatbot,
         time: moment().format('h:mm a')
     }
 };
