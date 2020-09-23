@@ -3,6 +3,7 @@ const HttpStatusCodes = require('http-status-codes');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET = 'myjwtscrete' } = process.env
+const capitalize = require('../helpers/capitalize')
 
 const { validateUserEmailExist, validateUsernameExist, createNewUser, getUserByUsername} = require('../services/user.service');
 const AuthController = {
@@ -27,30 +28,38 @@ const AuthController = {
 
         const { error, value } = schema.validate(req.body);
         if (error) {
-            const err = new Error(error);
-            err.status = HttpStatusCodes.BAD_REQUEST;
+            const err = new Error(error.message);
+            err.status = HttpStatusCodes.OK;
             return next(err)
         };
-        const emailExists = await validateUserEmailExist(value.email); 
+        const emailExists = await validateUserEmailExist(value.email.toLowerCase()); 
         if (emailExists) {
             const err = new Error(`User with ${value.email} already exist`)
-            err.status = HttpStatusCodes.CONFLICT
+            err.status = HttpStatusCodes.OK
             return next(err);
         }
-        const usernameExists = await validateUsernameExist(value.username); 
+
+        const usernameExists = await validateUsernameExist(capitalize(value.username)); 
         if (usernameExists) {
             const err = new Error(`User with ${value.username} already exist`)
-            err.status = HttpStatusCodes.CONFLICT
+            err.status = HttpStatusCodes.OK
             return next(err);
         }
         bcrypt.hash(value.password, 8, async function (err, hash) {
             if (err) {
                 const e = new Error(err);
-                e.status = HttpStatusCodes.INTERNAL_SERVER_ERROR;
+                e.status = HttpStatusCodes.OK;
                 return next(e)
             };
 
-            const newUser = await createNewUser({ ...value, password: hash });
+            const newUser = await createNewUser(
+                {
+                    password: hash,
+                    username: capitalize(value.username),
+                    firstName: capitalize(value.firstName),
+                    lastName: capitalize(value.lastName),
+                    email: value.email.toLowerCase()
+                });
 
             if (newUser) {
                 await res.status(HttpStatusCodes.CREATED).json({
@@ -62,6 +71,7 @@ const AuthController = {
         });
 
     },
+    
     login: async (req, res, next) => {
         const schema = Joi.object({
             username: Joi.string()
@@ -76,23 +86,22 @@ const AuthController = {
 
         const { error, value } = schema.validate(req.body);
         if (error) {
-            const err = new Error(error);
-            err.status = HttpStatusCodes.BAD_REQUEST;
+            const err = new Error(error.message);
+            err.status = HttpStatusCodes.OK;
             return next(err)
         };
 
-        const user = await getUserByUsername(value.username);
+        const user = await getUserByUsername(capitalize(value.username));
         if (!user) {
             const err = new Error('User with that username does not exist');
-            err.status = HttpStatusCodes.NO_CONTENT;
+            err.status = HttpStatusCodes.OK;
             return next(err);
         }
 
         bcrypt.compare(value.password, user.password, async function (err, result) {
-            console.log('result', result)
             if (err) {
                 const e = new Error(err);
-                e.status = HttpStatusCodes.INTERNAL_SERVER_ERROR;
+                e.status = HttpStatusCodes.OK;
                 return next(e)
             };
             
@@ -100,12 +109,12 @@ const AuthController = {
                 jwt.sign(value, JWT_SECRET, async function (err, token) {
                     if (err) {
                         const e = new Error(err);
-                        e.status = HttpStatusCodes.INTERNAL_SERVER_ERROR;
+                        e.status = HttpStatusCodes.OK;
                         return next(e)
                     };
     
                     await res.cookie('auth', token);
-                    await res.status(HttpStatusCodes.ACCEPTED).json({
+                    await res.status(HttpStatusCodes.OK).json({
                         ErrorMessage: null,
                         Success: result,
                         Results: [{ message: 'User logged in successfully', token }]
@@ -113,12 +122,10 @@ const AuthController = {
                 });
             } else {
                 const err = new Error('Wrong Password entered');
-                err.status = HttpStatusCodes.NOT_ACCEPTABLE
+                err.status = HttpStatusCodes.OK
                 return next(err);
             }
         });
-        
-        console.log(req.body);
     }
 }
 

@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const logger = require('morgan');
 const helmet = require('helmet');
+const cors = require('cors');
 
 const { DB_URL = 'mongodb://localhost:27017', DB_NAME = 'hey-yo', PORT = 3002 } = process.env;
 const appErrorHandler = require('./helpers/app-error');
@@ -19,6 +20,14 @@ const io = socketio(server);
 const publicDir = path.join(__dirname, 'public');
 
 app.use(helmet());
+app.use(cors());
+app.use((req, res, next) => {
+  req.header('Access-Control-Allow-Origin', '*');
+  req.header('Access-Control-Allow-Credentials', 'true');
+  req.header('Access-Control-Allow-Methods', 'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS');
+  req.header('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  next();
+})
 app.use(cookieParser());
 app.use(logger('dev'));
 app.use(bodyParser.json());
