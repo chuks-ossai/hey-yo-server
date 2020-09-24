@@ -28,6 +28,11 @@ const AuthController = {
 
         const { error, value } = schema.validate(req.body);
         if (error) {
+            if (error.details[0].path[0] == 'repeatPassword') {
+                const err = new Error(`Passwords don't match`);
+                err.status = HttpStatusCodes.OK;
+                return next(err)
+            };
             const err = new Error(error.message);
             err.status = HttpStatusCodes.OK;
             return next(err)
