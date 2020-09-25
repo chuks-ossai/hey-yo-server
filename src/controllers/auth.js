@@ -1,8 +1,6 @@
 const Joi = require('joi');
 const HttpStatusCodes = require('http-status-codes');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const appConfig = require('../config/app')
 const capitalize = require('../helpers/capitalize')
 
 const { validateUserEmailExist, validateUsernameExist, createNewUser, getUserByUsername} = require('../services/user.service');
@@ -123,21 +121,6 @@ const AuthController = {
                     Success: result,
                     Results: [{ message: 'User logged in successfully', auth: tokenObj }]
                 });
-                
-                // jwt.sign(user, appConfig.jwtSecret, async function (err, token) {
-                //     if (err) {
-                //         const e = new Error(err);
-                //         e.status = HttpStatusCodes.OK;
-                //         return next(e)
-                //     };
-    
-                //     await res.cookie('auth', token);
-                //     await res.status(HttpStatusCodes.OK).json({
-                //         ErrorMessage: null,
-                //         Success: result,
-                //         Results: [{ message: 'User logged in successfully', token }]
-                //     });
-                // });
             } else {
                 const err = new Error('Wrong Password entered');
                 err.status = HttpStatusCodes.OK

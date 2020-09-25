@@ -8,17 +8,20 @@ const issueToken = async (user) => {
 
     try {
         const _id = await user._id;
-        const expiresIn = '1h';
+        const expiresIn = '1d';
+        const n = new Date(new Date().getTime() + 60 * 60 * 24 * 1000);
+
+        console.log(Date.parse(expiresIn))
     
         const payload =  {
             data: user
         };
     
-        const signedToken =  jsonwebtoken.sign(payload, appConfig.jwtSecret, { expiresIn: expiresIn });
+        const signedToken =  jsonwebtoken.sign(payload, appConfig.jwtSecret, { expiresIn });
     
         return {
             token: "Bearer " + signedToken,
-            expires: expiresIn
+            expires: n.getTime()
         }
     } catch (err) {
         return {

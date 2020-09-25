@@ -1,3 +1,6 @@
+const Joi = require('joi');
+const Post = require('../models/post')
+
 const PostController = {
     getAll: async (req, res, next) => { },
     
@@ -5,11 +8,34 @@ const PostController = {
     
     getByUser: async (req, res, next) => { },
     
-    createNew: async (req, res, next) => { 
-        res.status(200).json({
+    createNew: async (req, res, next) => {
+        const schema = Joi.object({
+            content: Joi.string()
+                .required(),
+        });
+
+        const { error, value } = schema.validate(req.body);
+        if (error) {
+            const err = new Error(error.message);
+            err.status = HttpStatusCodes.OK;
+            return next(err)
+        };
+        const newPost = new Post({
+            user: req.user._id,
+            username: req.user.username,
+            content: req.body.content
+        })
+
+        const post = await newPost.save();
+        if (!post) {
+            const err = new Error('Something went wrong while trying to save post');
+            err.status = HttpStatusCodes.OK;
+            return next(err)
+        }
+        await res.status(200).json({
             Success: true,
             ErrorMessage: null,
-            Results: [req.user]
+            Results: [{message: 'Post created successfully', post: post.toObject()}]
         })
     },
     
