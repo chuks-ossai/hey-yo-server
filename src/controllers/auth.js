@@ -2,7 +2,7 @@ const Joi = require('joi');
 const HttpStatusCodes = require('http-status-codes');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { JWT_SECRET = 'myjwtscrete' } = process.env
+const appConfig = require('../config/app')
 const capitalize = require('../helpers/capitalize')
 
 const { validateUserEmailExist, validateUsernameExist, createNewUser, getUserByUsername} = require('../services/user.service');
@@ -111,7 +111,7 @@ const AuthController = {
             };
             
             if (result) {
-                jwt.sign(value, JWT_SECRET, async function (err, token) {
+                jwt.sign(value, appConfig.jwtSecret, async function (err, token) {
                     if (err) {
                         const e = new Error(err);
                         e.status = HttpStatusCodes.OK;

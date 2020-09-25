@@ -8,8 +8,8 @@ const bodyParser = require('body-parser')
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-
-const { DB_URL = 'mongodb://localhost:27017', DB_NAME = 'hey-yo', PORT = 3002 } = process.env;
+const passport = require('./helpers/passport');
+const appConfig = require('./config/app')
 const appErrorHandler = require('./helpers/app-error');
 const socketEvents = require('./helpers/socket-events');
 const routes = require('./routes');
@@ -38,17 +38,18 @@ app.use(express.static(publicDir))
 // app.get('*', (req, res) => {
 //     res.sendFile(path.join(publicDir, 'index.html'));
 // });
-
+app.use(passport.initialize());
+app.use(passport.session());
 socketEvents(io);
 app.use('/api/v1', routes);
 appErrorHandler(app);
 mongoose
-  .connect(`${DB_URL}/${DB_NAME}`, {
+  .connect(`${appConfig.db.uri}:${appConfig.db.port}/${appConfig.db.name}`, {
     useUnifiedTopology: true,
     useNewUrlParser: true
   })
   .then(() => {
-    server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    server.listen(appConfig.port, () => console.log(`Server running on http://localhost:${appConfig.port}`));
     console.log('You are now connected to mongo')
   })
   .catch(err => console.err('something went wrong', err));
