@@ -8,7 +8,7 @@ const bodyParser = require('body-parser')
 const logger = require('morgan');
 const helmet = require('helmet');
 const cors = require('cors');
-const passport = require('./helpers/passport');
+const passport = require('./config/passport');
 const appConfig = require('./config/app')
 const appErrorHandler = require('./helpers/app-error');
 const socketEvents = require('./helpers/socket-events');
@@ -46,7 +46,8 @@ appErrorHandler(app);
 mongoose
   .connect(`${appConfig.db.uri}:${appConfig.db.port}/${appConfig.db.name}`, {
     useUnifiedTopology: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useCreateIndex: true
   })
   .then(() => {
     server.listen(appConfig.port, () => console.log(`Server running on http://localhost:${appConfig.port}`));

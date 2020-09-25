@@ -24,7 +24,9 @@ const validateUsernameExist = async (username) => {
 
 const getUserByUsername = async (username) => {
     try {
-        return await User.findOne({username});
+        const user = await User.findOne({ username });
+        const userObj = await user.toObject();
+        return await userObj
     } catch (err) {
         throw new Error(err.message);
     }

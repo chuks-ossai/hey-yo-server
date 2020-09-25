@@ -6,6 +6,7 @@ const appConfig = require('../config/app')
 const capitalize = require('../helpers/capitalize')
 
 const { validateUserEmailExist, validateUsernameExist, createNewUser, getUserByUsername} = require('../services/user.service');
+const issueToken = require('../helpers/issue-token');
 const AuthController = {
     register: async (req, res, next) => {
         const schema = Joi.object({
@@ -70,7 +71,7 @@ const AuthController = {
                 await res.status(HttpStatusCodes.CREATED).json({
                     Success: true,
                     ErrorMessage: null,
-                    Results: [{message: 'User registeration successful', user: newUser}]
+                    Results: [{message: 'User registeration successful'}]
                 })  
             }
         });
@@ -109,22 +110,34 @@ const AuthController = {
                 e.status = HttpStatusCodes.OK;
                 return next(e)
             };
-            
+            delete user.password;
             if (result) {
-                jwt.sign(value, appConfig.jwtSecret, async function (err, token) {
-                    if (err) {
-                        const e = new Error(err);
-                        e.status = HttpStatusCodes.OK;
-                        return next(e)
-                    };
-    
-                    await res.cookie('auth', token);
-                    await res.status(HttpStatusCodes.OK).json({
-                        ErrorMessage: null,
-                        Success: result,
-                        Results: [{ message: 'User logged in successfully', token }]
-                    });
+                const tokenObj = await issueToken(user);
+                if (tokenObj.error) {
+                    const err = new Error('Somthing went wrong while trying to issue token'  );
+                    return next(err);
+                }
+                
+                await res.status(HttpStatusCodes.OK).json({
+                    ErrorMessage: null,
+                    Success: result,
+                    Results: [{ message: 'User logged in successfully', auth: tokenObj }]
                 });
+                
+                // jwt.sign(user, appConfig.jwtSecret, async function (err, token) {
+                //     if (err) {
+                //         const e = new Error(err);
+                //         e.status = HttpStatusCodes.OK;
+                //         return next(e)
+                //     };
+    
+                //     await res.cookie('auth', token);
+                //     await res.status(HttpStatusCodes.OK).json({
+                //         ErrorMessage: null,
+                //         Success: result,
+                //         Results: [{ message: 'User logged in successfully', token }]
+                //     });
+                // });
             } else {
                 const err = new Error('Wrong Password entered');
                 err.status = HttpStatusCodes.OK

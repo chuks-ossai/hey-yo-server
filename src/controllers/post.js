@@ -9,7 +9,7 @@ const PostController = {
         res.status(200).json({
             Success: true,
             ErrorMessage: null,
-            Results: [req.body]
+            Results: [req.user]
         })
     },
     
