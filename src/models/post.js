@@ -3,6 +3,7 @@ const mongoose = require('mongoose'),
 
 const PostSchema = Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
+    content: { type: String, required: true },
     comments: [
         {
             user: { type: Schema.Types.ObjectId, ref: 'User' },

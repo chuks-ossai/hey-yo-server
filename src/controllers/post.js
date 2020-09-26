@@ -22,7 +22,6 @@ const PostController = {
         };
         const newPost = new Post({
             user: req.user._id,
-            username: req.user.username,
             content: req.body.content
         })
 

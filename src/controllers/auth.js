@@ -95,6 +95,8 @@ const AuthController = {
             return next(err)
         };
 
+        console.log(value.username)
+
         const user = await getUserByUsername(capitalize(value.username));
         if (!user) {
             const err = new Error('User with that username does not exist');

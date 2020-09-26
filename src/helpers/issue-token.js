@@ -10,11 +10,9 @@ const issueToken = async (user) => {
         const _id = await user._id;
         const expiresIn = '1d';
         const n = new Date(new Date().getTime() + 60 * 60 * 24 * 1000);
-
-        console.log(Date.parse(expiresIn))
     
         const payload =  {
-            data: user
+            sub: _id
         };
     
         const signedToken =  jsonwebtoken.sign(payload, appConfig.jwtSecret, { expiresIn });
