@@ -1,10 +1,11 @@
 const User = require('../models/user');
 
 const UserController = {
-    getAllMyPosts: async (req, res, next) => {
-        const user = await User.findOne({ _id: req.user._id }).populate('posts').execPopulate();
-        if (!user.populated('posts')) {
-            const error = new Error('No user found');
+    getMyDetails: async (req, res, next) => {
+        const user = await User.findById(req.user._id).populate('post');
+
+        if (!user) {
+            const error = new Error('Something went wrong while trying to get user');
             error.status = 200;
             return next(error);
         }
@@ -12,9 +13,9 @@ const UserController = {
         await res.status(200).json({
             ErrorMessage: null,
             Success: true,
-            Results: user.posts
+            Results: user
         })
-    }
+    },
 }
 
 module.exports = UserController;

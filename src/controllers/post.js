@@ -2,15 +2,46 @@ const Joi = require('joi');
 const Post = require('../models/post')
 
 const PostController = {
-    getAll: async (req, res, next) => { },
+    getAll: async (req, res, next) => {
+        const posts = await Post.find({}).populate('user').sort({createdAt: -1});
+
+        if (!posts) {
+            const error = new Error('Something went wrong while trying to get posts');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: posts
+        })
+     },
     
     getById: async (req, res, next) => { },
     
     getByUser: async (req, res, next) => { },
+
+    getAllMyPosts: async (req, res, next) => {
+        const posts = await Post.find({user: req.user._id});
+        if (!posts) {
+            const error = new Error('No user found');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: posts
+        })
+    },
     
     createNew: async (req, res, next) => {
         const schema = Joi.object({
             content: Joi.string()
+                .required(),
+            title: Joi.string()
                 .required(),
         });
 
@@ -22,11 +53,12 @@ const PostController = {
         };
         const newPost = new Post({
             user: req.user._id,
+            title: req.body.title,
             content: req.body.content
         })
 
-        const post = await newPost.save();
-        if (!post) {
+        const savedPost = await newPost.save();
+        if (!savedPost) {
             const err = new Error('Something went wrong while trying to save post');
             err.status = HttpStatusCodes.OK;
             return next(err)
@@ -34,7 +66,7 @@ const PostController = {
         await res.status(200).json({
             Success: true,
             ErrorMessage: null,
-            Results: [{message: 'Post created successfully', post: post.toObject()}]
+            Results: [{message: 'Post created successfully', post: savedPost.toObject()}]
         })
     },
     

@@ -8,6 +8,8 @@ const UserSchema = Schema({
   firstName: {type: String},
   lastName: { type: String },
   posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -12,7 +12,7 @@ const issueToken = async (user) => {
         const n = new Date(new Date().getTime() + 60 * 60 * 24 * 1000);
     
         const payload =  {
-            sub: _id
+            sub: user
         };
     
         const signedToken =  jsonwebtoken.sign(payload, appConfig.jwtSecret, { expiresIn });

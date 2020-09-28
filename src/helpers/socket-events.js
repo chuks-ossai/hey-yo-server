@@ -6,6 +6,11 @@ module.exports = (io) => {
 
     io.on('connection', socket => {
 
+        socket.on('refreshData', () => {
+            console.log('data shoul refresh here');
+            io.emit('pageRefresh', {});
+        })
+
         socket.on('joinRoom', ({ username, room }) => {
             const user = addUser(socket.id, username, room);
             socket.join(user.room);
