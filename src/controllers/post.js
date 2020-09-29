@@ -69,6 +69,34 @@ const PostController = {
             Results: [{message: 'Post created successfully', post: savedPost.toObject()}]
         })
     },
+
+    like: async (req, res, next) => {
+
+        const postId = await req.body._id
+
+        const updatedPost = await Post.update({
+            _id: postId,
+            'likes.username': { $ne: req.user.username }
+        }, {
+            $push: {
+                likes: { username: req.user.username }
+                },
+            $inc: {totalLikes: 1 }
+        });
+
+        if (!updatedPost) {
+            const error = new Error('Unable like post');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            Success: true,
+            ErrorMessage: null,
+            Results: [{ message: 'Post liked successfully' }]
+        })
+
+    },
     
     removeById: async (req, res, next) => { },
     

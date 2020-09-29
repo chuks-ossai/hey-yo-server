@@ -9,6 +9,7 @@ router.get('/get-by-id/:id', AsyncErrorHandler(PostController.getById));
 router.get('/get-by-user/:userId', AsyncErrorHandler(PostController.getByUser));
 router.get('/my/getAll', AsyncErrorHandler(PostController.getAllMyPosts));
 router.post('/new', AsyncErrorHandler(PostController.createNew));
+router.post('/like', AsyncErrorHandler(PostController.like));
 router.put('/edit/:id', AsyncErrorHandler(PostController.editById));
 router.delete('/delete-by-id/:id', AsyncErrorHandler(PostController.removeById));
 router.delete('/delete-by-user/:userId/:id', AsyncErrorHandler(PostController.removeSingleUserPost));
