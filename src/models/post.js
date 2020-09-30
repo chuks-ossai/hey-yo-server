@@ -4,6 +4,7 @@ const mongoose = require('mongoose'),
 const PostSchema = Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     title: { type: String, required: true },
+    profession: { type: String },
     content: { type: String, required: true },
     comments: [
         {
