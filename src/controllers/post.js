@@ -18,7 +18,24 @@ const PostController = {
         })
      },
     
-    getById: async (req, res, next) => { },
+    getById: async (req, res, next) => { 
+        const post = await Post.findById(req.params.id).populate('user').populate('comments.user');
+
+        if (!post) {
+            const error = new Error('Something went wrong while trying to get posts');
+            error.status = 200;
+            return next(error);
+        }
+
+        const postObj = await post.toObject()
+        delete postObj.user.password;
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: [{post: postObj, message: 'Post found'}]
+        })
+    },
     
     getByUser: async (req, res, next) => { },
 
@@ -94,6 +111,65 @@ const PostController = {
             Success: true,
             ErrorMessage: null,
             Results: [{ message: 'Post liked successfully' }]
+        })
+
+    },
+
+    unlike: async (req, res, next) => {
+
+        const postId = await req.body._id
+
+        const updatedPost = await Post.update({
+            _id: postId,
+            'likes.username': { $eq: req.user.username }
+        }, {
+            $pull: {
+                likes: { username: req.user.username }
+                },
+            $inc: {totalLikes: -1 }
+        });
+
+        if (!updatedPost) {
+            const error = new Error('Unable like post');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            Success: true,
+            ErrorMessage: null,
+            Results: [{ message: 'Post unliked successfully' }]
+        })
+
+    },
+
+    comment: async (req, res, next) => {
+
+        const postId = await req.body.postId
+
+        const updatedPost = await Post.update({
+            _id: postId
+        }, {
+            $push: {
+                comments: {
+                    user: req.user._id,
+                    username: req.user.username,
+                    comment: req.body.content,
+                    createAt: Date.now()
+                }
+            }
+        });
+
+        if (!updatedPost) {
+            const error = new Error('Unable to make comment on post');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            Success: true,
+            ErrorMessage: null,
+            Results: [{ message: 'Successfully commented on post' }]
         })
 
     },
