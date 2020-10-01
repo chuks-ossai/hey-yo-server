@@ -11,6 +11,10 @@ module.exports = (io) => {
             io.emit('pageRefresh', {});
         })
 
+        socket.on('refreshUsers', () => {
+            io.emit('peopleRefresh', {});
+        })
+
         socket.on('joinRoom', ({ username, room }) => {
             const user = addUser(socket.id, username, room);
             socket.join(user.room);

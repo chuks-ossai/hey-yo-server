@@ -7,7 +7,9 @@ const UserSchema = Schema({
   password: { type: String, required: true },
   firstName: {type: String},
   lastName: { type: String },
-  posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
+  posts: [{type: Schema.Types.ObjectId, ref: 'Post'} ],
+  followers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  following: [{type: Schema.Types.ObjectId, ref: 'User'}]
 }, {
   timestamps: true
 });

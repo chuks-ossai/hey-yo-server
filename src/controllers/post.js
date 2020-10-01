@@ -91,7 +91,7 @@ const PostController = {
 
         const postId = await req.body._id
 
-        const updatedPost = await Post.update({
+        const updatedPost = await Post.updateOne({
             _id: postId,
             'likes.username': { $ne: req.user.username }
         }, {
@@ -119,7 +119,7 @@ const PostController = {
 
         const postId = await req.body._id
 
-        const updatedPost = await Post.update({
+        const updatedPost = await Post.updateOne({
             _id: postId,
             'likes.username': { $eq: req.user.username }
         }, {
@@ -147,7 +147,7 @@ const PostController = {
 
         const postId = await req.body.postId
 
-        const updatedPost = await Post.update({
+        const updatedPost = await Post.updateOne({
             _id: postId
         }, {
             $push: {
