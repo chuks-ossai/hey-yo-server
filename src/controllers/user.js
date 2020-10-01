@@ -1,3 +1,4 @@
+const user = require('../models/user');
 const User = require('../models/user');
 
 const UserController = {
@@ -69,7 +70,7 @@ const UserController = {
             'following': {$ne: userId}
         }, {
                 $push: {
-                following: userId
+                following: userId,
             }
         });
 
@@ -78,7 +79,13 @@ const UserController = {
             'followers': {$ne: myId}
         }, {
                 $push: {
-                followers: myId
+                followers: myId,
+                notifications: {
+                    senderId: myId,
+                    senderName: `${req.user.firstName} ${req.user.lastName}`,
+                    message: `${req.user.firstName} ${req.user.lastName} started following you`,
+                    created: Date.now()
+                }
             }
         });
 
@@ -129,6 +136,52 @@ const UserController = {
             Results: [{ message: 'Successfully unfollowed user' }]
         })
     },
+
+    markNotification: async (req, res, next) => {
+        const userUpdate = await User.updateOne({
+            _id: req.user._id, 
+            'notifications._id': req.params.notificationId
+        }, {
+                $set: {
+                'notifications.$.read': true
+            }
+        })
+
+        if (!userUpdate.nModified) {
+            const error = new Error('Something went wrong. Unable to mark notification');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: [{ message: 'Notification marked successfully' }]
+        })
+    },
+
+    deleteNotification: async (req, res, next) => {
+        const userUpdate = await User.updateOne({
+            _id: req.user._id, 
+            'notifications._id': req.params.notificationId
+        }, {
+                $pull: {
+                notifications: {_id: req.params.notificationId}
+            }
+        })
+
+        if (!userUpdate.nModified) {
+            const error = new Error('Something went wrong. Unable to remove notification');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: [{ message: 'Notification removed successfully' }]
+        })
+    }
 }
 
 module.exports = UserController;

@@ -9,7 +9,15 @@ const UserSchema = Schema({
   lastName: { type: String },
   posts: [{type: Schema.Types.ObjectId, ref: 'Post'} ],
   followers: [{type: Schema.Types.ObjectId, ref: 'User'}],
-  following: [{type: Schema.Types.ObjectId, ref: 'User'}]
+  following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  notifications: [{
+    senderName: { type: String },
+    message: { type: String },
+    profileViewed: { type: Boolean, default: false },
+    created: { type: Date },
+    read: { type: Boolean, default: false }, 
+    date: { type: String }
+  }]
 }, {
   timestamps: true
 });
