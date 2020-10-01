@@ -23,7 +23,7 @@ const UserController = {
     },
 
     getMyDetails: async (req, res, next) => {
-        const user = await User.findById(req.user._id).populate('post');
+        const user = await User.findById(req.user._id).populate('posts').populate('followers').populate('following');
 
         if (!user) {
             const error = new Error('Something went wrong while trying to get user');
