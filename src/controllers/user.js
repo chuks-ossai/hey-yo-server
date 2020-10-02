@@ -168,6 +168,28 @@ const UserController = {
         })
     },
 
+    markAllNotifications: async (req, res, next) => {
+        const updated = await User.updateOne({
+            _id: req.user._id
+        },
+            { $set: { 'notifications.$[elem].read': true } },
+            { arrayFilters: [{ 'elem.read': false }], multi: true }
+        );
+
+        if (!updated.nModified) {
+            const error = new Error('Something went wrong. Unable to mark all notifications');
+            error.status = 200;
+            return next(error);
+        }
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: [{ message: 'All unread notifications are successfully marked as read' }]
+        })
+
+    },
+
     deleteNotification: async (req, res, next) => {
         const userUpdate = await User.updateOne({
             _id: req.user._id, 

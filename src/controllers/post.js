@@ -4,6 +4,7 @@ const Post = require('../models/post')
 const PostController = {
     getAll: async (req, res, next) => {
         const posts = await Post.find({}).populate('user').sort({createdAt: -1});
+        const topPosts = await Post.find({ $and: [{ totalLikes: { $gte: 2 } }, {'comments.2': {$exists: true}}]}).populate('user').sort({createdAt: -1});
 
         if (!posts) {
             const error = new Error('Something went wrong while trying to get posts');
@@ -14,7 +15,7 @@ const PostController = {
         await res.status(200).json({
             ErrorMessage: null,
             Success: true,
-            Results: posts
+            Results: [{ posts, topPosts}]
         })
      },
     
