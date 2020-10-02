@@ -98,7 +98,7 @@ const UserController = {
         await res.status(200).json({
             ErrorMessage: null,
             Success: true,
-            Results: [{message: 'Successfully following user', following: userFollowing, follower: userFollower}]
+            Results: [{message: 'Successfully following user'}]
         })
     },
 
@@ -120,7 +120,15 @@ const UserController = {
             'followers': { $eq: myId }
         }, {
             $pull: {
-                followers: myId
+                followers: myId,
+                },
+                $push: {
+                    notifications: {
+                        senderId: myId,
+                        senderName: `${req.user.firstName} ${req.user.lastName}`,
+                        message: `${req.user.firstName} ${req.user.lastName} has unfollowed you`,
+                        created: Date.now()
+                    }
             }
         });
 

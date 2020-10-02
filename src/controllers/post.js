@@ -129,7 +129,7 @@ const PostController = {
             $inc: {totalLikes: -1 }
         });
 
-        if (!updatedPost) {
+        if (!updatedPost.nModified) {
             const error = new Error('Unable like post');
             error.status = 200;
             return next(error);

@@ -53,5 +53,5 @@ mongoose
     server.listen(appConfig.port, () => console.log(`Server running on http://localhost:${appConfig.port}`));
     console.log('You are now connected to mongo')
   })
-  .catch(err => console.err('something went wrong', err));
+  .catch(err => console.error('something went wrong', err));
 
