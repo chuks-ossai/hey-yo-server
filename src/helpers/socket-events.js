@@ -11,22 +11,18 @@ module.exports = (io) => {
             io.emit('pageRefresh', {});
         })
 
-        socket.on('joinRoom', ({ username, room }) => {
-            const user = addUser(socket.id, username, room);
-            socket.join(user.room);
-            socket.emit('connected', formatMessage(chatBotName, `Welcome to ${user.room.charAt(0).toUpperCase() + user.room.slice(1)}`, true, user.room, socket.id));
-            socket.broadcast.to(user.room).emit('joined', formatMessage(chatBotName, `${user.username} has joined room`, true));
-
-            io.to(user.room).emit('roomData', { room: user.room, users: getAllUsersInRoom(user.room) })
+        socket.on('joinChat', (data) => {
+            console.log(data);
+            socket.join(data.sender);
+            socket.join(data.receiver);
         })
 
-        socket.on('newMessage', message => {
-            const user = getCurrentUser(socket.id);
-            if (user) {
-                io.to(user.room).emit('serverMessage', formatMessage(user.username, message, false, null, user.id));
-            } else {
-                console.log('Sorry we cannot find this user');
-            }
+        socket.on('typing', (data) => {
+            io.to(data.receiver).emit('senderTyping', data)
+        })
+
+        socket.on('stopTyping', (data) => {
+            io.to(data.receiver).emit('senderStoppedTyping', data)
         })
 
         socket.on('disconnect', message => {
