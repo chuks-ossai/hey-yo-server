@@ -17,7 +17,13 @@ const UserSchema = Schema({
     created: { type: Date },
     read: { type: Boolean, default: false }, 
     date: { type: String }
-  }]
+  }],
+  chats: [
+    {
+      receiver: { type: Schema.Types.ObjectId, ref: 'User' },
+      message: { type: Schema.Types.ObjectId, ref: 'Message' }
+    }
+  ]
 }, {
   timestamps: true
 });

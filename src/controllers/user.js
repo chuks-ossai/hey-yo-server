@@ -1,4 +1,3 @@
-const user = require('../models/user');
 const User = require('../models/user');
 
 const UserController = {
@@ -44,6 +43,25 @@ const UserController = {
 
     getById: async (req, res, next) => {
         const user = await User.findById(req.params.id).populate('post');
+
+        if (!user) {
+            const error = new Error('Something went wrong while trying to get user');
+            error.status = 200;
+            return next(error);
+        }
+
+        const userObj = user.toObject()
+        delete userObj.password;
+
+        await res.status(200).json({
+            ErrorMessage: null,
+            Success: true,
+            Results: [userObj]
+        })
+    },
+
+    getByUsername: async (req, res, next) => {
+        const user = await User.findOne({username: req.params.username}).populate('post');
 
         if (!user) {
             const error = new Error('Something went wrong while trying to get user');
