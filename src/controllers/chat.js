@@ -1,3 +1,4 @@
+const updateChatNotificationList = require("../helpers/update-chat-notification-list");
 const Chat = require("../models/chat");
 const Message = require("../models/message");
 const User = require("../models/user");
@@ -58,8 +59,8 @@ const ChatController = {
             ]
         });
 
-        console.log(conversations.length);
         if (!conversations.length) {
+
             const newChat = new Chat();
 
             await newChat.participants.push({
@@ -75,7 +76,6 @@ const ChatController = {
                 return next(error);
             }
 
-            console.log(savedChat);
             const newMessage = new Message({
                 conversation: savedChat._id,
                 senderName: req.user.username,
@@ -107,7 +107,8 @@ const ChatController = {
                                 receiver: receiverId,
                                 message: savedMessage._id
                             }
-                        ]
+                        ],
+                        $position: 0
                     }
                 }
             })
@@ -122,7 +123,8 @@ const ChatController = {
                                 receiver: req.user._id,
                                 message: savedMessage._id
                             }
-                        ]
+                        ],
+                        $position: 0
                     }
                 }
             })
@@ -134,6 +136,16 @@ const ChatController = {
             })
         }
 
+
+        const mesg = await Message.findOne({ conversation: conversations[0]._id });
+        console.log('i dont understand o', mesg);
+        const possibleError = await updateChatNotificationList(req, mesg);
+
+        if (possibleError) {
+            const error = new Error(possibleError.errorMsg);
+            error.status = 200;
+            return next(error);
+        }
         const updateMessage = await Message.updateOne({
             conversation: conversations[0]._id
         }, {

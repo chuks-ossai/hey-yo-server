@@ -2,7 +2,12 @@ const User = require('../models/user');
 
 const UserController = {
     getAll: async (req, res, next) => {
-        const users = await User.find({_id: {$ne: req.user._id}}).populate('posts').populate('following').populate('followers');
+        const users = await User.find({ _id: { $ne: req.user._id } })
+            .populate('posts')
+            .populate('following')
+            .populate('followers')
+            .populate('chats.receiver')
+            .populate('chats.message');
 
         if (!users) {
             const error = new Error('Something went wrong while trying to get users');
@@ -23,7 +28,12 @@ const UserController = {
     },
 
     getMyDetails: async (req, res, next) => {
-        const user = await User.findById(req.user._id).populate('posts').populate('followers').populate('following');
+        const user = await User.findById(req.user._id)
+            .populate('posts')
+            .populate('followers')
+            .populate('following')
+            .populate('chats.receiver')
+            .populate('chats.message');;
 
         if (!user) {
             const error = new Error('Something went wrong while trying to get user');
@@ -42,7 +52,10 @@ const UserController = {
     },
 
     getById: async (req, res, next) => {
-        const user = await User.findById(req.params.id).populate('post');
+        const user = await User.findById(req.params.id)
+            .populate('post')
+            .populate('chats.receiver')
+            .populate('chats.message');
 
         if (!user) {
             const error = new Error('Something went wrong while trying to get user');
@@ -61,7 +74,10 @@ const UserController = {
     },
 
     getByUsername: async (req, res, next) => {
-        const user = await User.findOne({username: req.params.username}).populate('post');
+        const user = await User.findOne({ username: req.params.username })
+            .populate('post')
+            .populate('chats.receiver')
+            .populate('chats.message');;
 
         if (!user) {
             const error = new Error('Something went wrong while trying to get user');
